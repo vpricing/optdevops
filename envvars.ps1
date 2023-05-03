@@ -2,7 +2,7 @@
 
 #Profile Environment
 $DevAccount=''
-$DevProfile=''
+$DevProfile='vol-opt-developer'
 $UatAccount=''
 $UatProfile=''
 $ProdAccount=''
@@ -26,3 +26,5 @@ $ProdOptProjectCIDR='/16'
 $TGWNetAccount=''
 $TGWID=''
 $TGRegion='us-east-1'
+
+$devAdmRoleCred = aws sts assume-role --role-arn "arn:aws:iam::108160666657:role/rm/opt/usr-role/opt.CloudMngAccess" --role-session-name "CloudMngAccessCLI" --profile $DevProfile
