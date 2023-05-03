@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Dynamic Pricing - DevOps - Security
+
+Parameters: 
+  Environment:
+    Type: String
+    Default: 'dev'
+
+Resources: 
+  ITAdministratorRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS:
+                - "arn:aws:iam::108160666657:user/rm/opt/poweruser/luis.calderon_dev"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/it/cloud/dev/cldmng/usr/"
