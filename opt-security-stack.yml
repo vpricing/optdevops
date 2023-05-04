@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Dynamic Pricing - DevOps - Security
+
+Parameters: 
+  Environment:
+    Type: String
+    Default: 'dev'
+
+Resources: 
+  ITAdministratorRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS:
+                - "arn:aws:iam::108160666657:user/it/cloud-mng/admin/isaac.hernandez"
+            Action:
+              - "sts:AssumeRole"
+      Path: !Sub "/it/cloud/${Environment}/cldmng/usr/"
+      RoleName: ITAdministrator
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AdministratorAccess
+  PricingAdministratorRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS:
+                - "arn:aws:iam::108160666657:user/rm/opt/poweruser/luis.calderon_dev"
+                - "arn:aws:iam::108160666657:user/rm/opt/admin/luis.calderon"
+            Action:
+              - "sts:AssumeRole"
+      Path: !Sub "/rm/opt/${Environment}/cldmng/usr/"
+      RoleName: PricingAdministrator
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AdministratorAccess
+  PricingPowerUser:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS:
+                - "arn:aws:iam::108160666657:user/rm/opt/poweruser/luis.calderon_dev"
+            Action:
+              - "sts:AssumeRole"
+      Path: !Sub "/rm/opt/${Environment}/clddev/usr/"
+      RoleName: PricingPowerUser
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/PowerUserAccess
+  ITViewer:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS:
+                - "arn:aws:iam::595185955469:root"
+            Action:
+              - "sts:AssumeRole"
+      Path: !Sub "/it/ci/${Environment}/aud/usr/"
+      RoleName: ITViewer
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
