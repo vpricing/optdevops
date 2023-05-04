@@ -27,4 +27,11 @@ $TGWNetAccount=''
 $TGWID=''
 $TGRegion='us-east-1'
 
-$devAdmRoleCred = aws sts assume-role --role-arn "arn:aws:iam::108160666657:role/rm/opt/usr-role/opt.CloudMngAccess" --role-session-name "CloudMngAccessCLI" --profile $DevProfile
+$devAdmRoleCred = (aws sts assume-role --role-arn "arn:aws:iam::108160666657:role/rm/opt/usr-role/opt.CloudMngAccess" --role-session-name "AWSCLI-Session-LGCC-admin" --profile $DevProfile | ConvertFrom-Json).Credentials
+$env:AWS_ACCESS_KEY_ID=$devAdmRoleCred.AccessKeyId
+$env:AWS_SECRET_ACCESS_KEY=$devAdmRoleCred.SecretAccessKey
+$env:AWS_DEFAULT_REGION="us-east-2"
+$env:AWS_SESSION_TOKEN=$devAdmRoleCred.SessionToken
+
+aws cloudformation create-stack --stack-name "opt-dev-security" --template-body file://opt-security-stack.yml --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation update-stack --stack-name "opt-dev-security" --template-body file://opt-security-stack.yml --capabilities CAPABILITY_NAMED_IAM
