@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Dynamic Pricing - DevOps - Network
+Parameters: 
+  Environment:
+    Type: String
+    Default: 'dev'
+
+Resources: 
+
+Outputs:
