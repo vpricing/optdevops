@@ -4,7 +4,44 @@ Parameters:
   Environment:
     Type: String
     Default: 'dev'
+  NavPrivCIDR:
+    Type: String
+    Default: '10.108.0.0/16'
+    AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
+  NavPubCIDR:
+    Type: String
+    Default: '10.107.0.0/16'
+    AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
+  ProjectCIDR:
+    Type: String
+    Default: '10.106.0.0/16'
+    AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
 
 Resources: 
-
-Outputs:
+  NavitairePrivateVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref NavPrivCIDR
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+      Tags: 
+        - Key: "Name"
+          Value: "VoiPricingNavitairePrivate-vpc"
+  NavitairePublicVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref NavPubCIDR
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+      Tags: 
+        - Key: "Name"
+          Value: "VoiPricingNavitairePublic-vpc"
+  ProjectVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref ProjectCIDR
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+      Tags: 
+        - Key: "Name"
+          Value: "VoiPricing-vpc"

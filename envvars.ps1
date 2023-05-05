@@ -35,3 +35,9 @@ $env:AWS_SESSION_TOKEN=$devAdmRoleCred.SessionToken
 
 aws cloudformation create-stack --stack-name "opt-dev-security" --template-body file://opt-security-stack.yml --capabilities CAPABILITY_NAMED_IAM
 aws cloudformation update-stack --stack-name "opt-dev-security" --template-body file://opt-security-stack.yml --capabilities CAPABILITY_NAMED_IAM
+
+aws cloudformation validate-template --template-body file://opt-network-stack.yml
+aws cloudformation create-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM
+
+aws cloudformation update-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation delete-stack --stack-name "opt-dev-network"
