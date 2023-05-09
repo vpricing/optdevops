@@ -39,5 +39,5 @@ aws cloudformation update-stack --stack-name "opt-dev-security" --template-body 
 aws cloudformation validate-template --template-body file://opt-network-stack.yml
 aws cloudformation create-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM
 
-aws cloudformation update-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation update-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM --parameter ParameterKey=TGRegion,ParameterValue=us-east-2 ParameterKey=TGatewayId,ParameterValue=tgw-08ef88e69dcd07c7a
 aws cloudformation delete-stack --stack-name "opt-dev-network"
