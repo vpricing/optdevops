@@ -27,6 +27,16 @@ Resources:
       Tags: 
         - Key: "Name"
           Value: "VoiPricingNavitairePrivate-vpc"
+  NavitairePrivateRT:
+    Type: AWS::EC2::RouteTable
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId: !Ref NavitairePrivateVPC
+      Tags:
+        - Key: Name
+          Value: "PricingNavitairePrivate-rt"
+        - Key: Env
+          Value: !Ref Environment
   NPODSConSubNet1:
     Type: AWS::EC2::Subnet
     DependsOn: NavitairePrivateVPC
@@ -66,6 +76,87 @@ Resources:
           Value: "ODSConnSubN3"
         - Key: Env
           Value: !Ref Environment
+  NPNewSkiesSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 3, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NewSkiesSubN1"
+        - Key: Env
+          Value: !Ref Environment
+  NPNewSkiesSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 4, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NewSkiesSubN2"
+        - Key: Env
+          Value: !Ref Environment
+  NPNewSkiesSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 5, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NewSkiesSubN3"
+        - Key: Env
+          Value: !Ref Environment
+  NPODSConSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPODSConSubNet1
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPODSConSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPODSConSubNet2
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPODSConSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPODSConSubNet3
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPNewSkiesSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPNewSkiesSubNet1
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPNewSkiesSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPNewSkiesSubNet2
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPNewSkiesSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPNewSkiesSubNet3
+      RouteTableId:
+        Ref: NavitairePrivateRT
   NavitairePublicVPC:
     Type: AWS::EC2::VPC
     Properties: 
