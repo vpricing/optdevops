@@ -4,6 +4,17 @@ Parameters:
   Environment:
     Type: String
     Default: 'dev'
+  NavitaireCIDR:
+    Type: String
+    Default: '149.122.50.0/24'
+  TGRegion:
+    Type: String
+    Default: us-east-1
+  TGatewayId:
+    Type: String
+  TGAccountId:
+    Type: String
+    Default: '072515348649'
   NavPrivCIDR:
     Type: String
     Default: '10.108.0.0/16'
@@ -157,6 +168,50 @@ Resources:
         Ref: NPNewSkiesSubNet3
       RouteTableId:
         Ref: NavitairePrivateRT
+  NavitairePrivateTGW:
+    Type: "AWS::EC2::TransitGateway"
+    Properties:
+      AmazonSideAsn: 65000
+      Description: "TGW Dev Integration"
+      AutoAcceptSharedAttachments: "disable"
+      DefaultRouteTableAssociation: "enable"
+      DnsSupport: "enable"
+      VpnEcmpSupport: "enable"
+      Tags:
+        - Key: Env
+          Value: !Ref Environment
+  NPTGWPeerAttach:
+    Type: AWS::EC2::TransitGatewayPeeringAttachment
+    Properties: 
+      PeerAccountId: !Ref TGAccountId
+      PeerRegion: !Ref TGRegion
+      PeerTransitGatewayId: !Ref TGatewayId
+      TransitGatewayId: !Ref NavitairePrivateTGW
+      Tags: 
+        - Key: Env
+          Value: !Ref Environment
+  NPTGWVPCAttach:
+    Type: AWS::EC2::TransitGatewayAttachment
+    Properties: 
+      SubnetIds: 
+        - !Ref NPODSConSubNet1
+        - !Ref NPODSConSubNet2
+        - !Ref NPNewSkiesSubNet3
+      Tags: 
+        - Key: Env
+          Value: !Ref Environment
+      TransitGatewayId: !Ref NavitairePrivateTGW
+      VpcId: !Ref NavitairePrivateVPC
+  NPTGWRoute:
+    Type: AWS::EC2::Route
+    DependsOn: NPTGWVPCAttach
+    Properties:
+       RouteTableId:
+         Ref: NavitairePrivateRT
+       DestinationCidrBlock: !Ref NavitaireCIDR
+       TransitGatewayId:
+         Ref: NavitairePrivateTGW
+
   NavitairePublicVPC:
     Type: AWS::EC2::VPC
     Properties: 
