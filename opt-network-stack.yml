@@ -27,6 +27,45 @@ Resources:
       Tags: 
         - Key: "Name"
           Value: "VoiPricingNavitairePrivate-vpc"
+  NPODSConSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 0, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "ODSConnSubN1"
+        - Key: Env
+          Value: !Ref Environment
+  NPODSConSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 1, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "ODSConnSubN2"
+        - Key: Env
+          Value: !Ref Environment
+  NPODSConSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 2, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "ODSConnSubN3"
+        - Key: Env
+          Value: !Ref Environment
   NavitairePublicVPC:
     Type: AWS::EC2::VPC
     Properties: 
