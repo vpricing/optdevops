@@ -12,9 +12,10 @@ Parameters:
     Default: us-east-1
   TGatewayId:
     Type: String
+    Default: tgw-0198c3591361cf885
   TGAccountId:
     Type: String
-    Default: '072515348649'
+    Default: '198251194805'
   NavPrivCIDR:
     Type: String
     Default: '10.108.0.0/16'
@@ -180,6 +181,8 @@ Resources:
       Tags:
         - Key: Env
           Value: !Ref Environment
+        - Key: Name
+          Value: !Sub 'VolITNetwork-${Environment}-tgw'
   NPTGWPeerAttach:
     Type: AWS::EC2::TransitGatewayPeeringAttachment
     Properties: 
@@ -190,6 +193,8 @@ Resources:
       Tags: 
         - Key: Env
           Value: !Ref Environment
+        - Key: Name
+          Value: !Sub 'VolITNav-${Environment}-tgwa'
   NPTGWVPCAttach:
     Type: AWS::EC2::TransitGatewayAttachment
     Properties: 
@@ -200,6 +205,8 @@ Resources:
       Tags: 
         - Key: Env
           Value: !Ref Environment
+        - Key: Name
+          Value: !Sub 'VolPrcNavPriv-${Environment}-vpc'
       TransitGatewayId: !Ref NavitairePrivateTGW
       VpcId: !Ref NavitairePrivateVPC
   NPTGWRoute:
