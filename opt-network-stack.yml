@@ -59,7 +59,7 @@ Resources:
       AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "ODSConnSubN1"
+          Value: "NavDotRezSubN1"
         - Key: Env
           Value: !Ref Environment
   NPODSConSubNet2:
@@ -72,7 +72,7 @@ Resources:
       AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "ODSConnSubN2"
+          Value: "NavDotRezSubN2"
         - Key: Env
           Value: !Ref Environment
   NPODSConSubNet3:
@@ -85,7 +85,7 @@ Resources:
       AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "ODSConnSubN3"
+          Value: "NavDotRezSubN3"
         - Key: Env
           Value: !Ref Environment
   NPNewSkiesSubNet1:
@@ -209,6 +209,15 @@ Resources:
           Value: !Sub 'VolPrcNavPriv-${Environment}-vpc'
       TransitGatewayId: !Ref NavitairePrivateTGW
       VpcId: !Ref NavitairePrivateVPC
+  NPS3Endpoint:
+    Type: AWS::EC2::VPCEndpoint
+    DependsOn: NavitairePrivateRT
+    Properties:
+      RouteTableIds: 
+        - !Ref NavitairePrivateRT
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.s3'
+      VpcEndpointType: Gateway
+      VpcId: !Ref NavitairePrivateVPC
   NPTGWRoute:
     Type: AWS::EC2::Route
     DependsOn: NPTGWVPCAttach
@@ -228,6 +237,45 @@ Resources:
       Tags: 
         - Key: "Name"
           Value: "VoiPricingNavitairePublic-vpc"
+  NPubDotRezSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePublicVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePublicVPC
+      CidrBlock: !Select [ 0, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavDotRezSubN1"
+        - Key: Env
+          Value: !Ref Environment
+  NPubDotRezSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePublicVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePublicVPC
+      CidrBlock: !Select [ 1, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavDotRezSubN2"
+        - Key: Env
+          Value: !Ref Environment
+  NPubDotRezSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePublicVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePublicVPC
+      CidrBlock: !Select [ 2, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavDotRezSubN3"
+        - Key: Env
+          Value: !Ref Environment
   ProjectVPC:
     Type: AWS::EC2::VPC
     Properties: 
