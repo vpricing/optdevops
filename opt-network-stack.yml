@@ -321,3 +321,103 @@ Resources:
       Tags: 
         - Key: "Name"
           Value: "VolPricing-vpc"
+  PrcPubRT:
+    Type: AWS::EC2::RouteTable
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId: !Ref ProjectVPC
+      Tags:
+        - Key: Name
+          Value: "VolPrcPub-rt"
+        - Key: Env
+          Value: !Ref Environment
+  PrcPrvRT:
+    Type: AWS::EC2::RouteTable
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId: !Ref ProjectVPC
+      Tags:
+        - Key: Name
+          Value: "VolPrcPrv-rt"
+        - Key: Env
+          Value: !Ref Environment
+  PrcPublicSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 0, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcPublicSub1"
+        - Key: Env
+          Value: !Ref Environment
+  PrcPublicSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 1, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcPublicSub2"
+        - Key: Env
+          Value: !Ref Environment
+  PrcPublicSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 2, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcPublicSub3"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDataWarehouseSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 3, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDataWarehouseSub1"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDataWarehouseSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 4, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDataWarehouseSub2"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDataWarehouseSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 5, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcPublicSub3"
+        - Key: Env
+          Value: !Ref Environment
+  
+ 
