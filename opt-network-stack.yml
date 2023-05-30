@@ -38,7 +38,7 @@ Resources:
       EnableDnsSupport: True
       Tags: 
         - Key: "Name"
-          Value: "VoiPricingNavitairePrivate-vpc"
+          Value: "VolPrcNavPrv-vpc"
   NavitairePrivateRT:
     Type: AWS::EC2::RouteTable
     DependsOn: NavitairePrivateVPC
@@ -46,7 +46,7 @@ Resources:
       VpcId: !Ref NavitairePrivateVPC
       Tags:
         - Key: Name
-          Value: "PricingNavitairePrivate-rt"
+          Value: "VolPrcNavPrv-rt"
         - Key: Env
           Value: !Ref Environment
   NPODSConSubNet1:
@@ -236,7 +236,7 @@ Resources:
       EnableDnsSupport: True
       Tags: 
         - Key: "Name"
-          Value: "VoiPricingNavitairePublic-vpc"
+          Value: "VolPrcNavPub-vpc"
   NPubDotRezSubNet1:
     Type: AWS::EC2::Subnet
     DependsOn: NavitairePublicVPC
@@ -276,6 +276,42 @@ Resources:
           Value: "NavDotRezSubN3"
         - Key: Env
           Value: !Ref Environment
+  NavPubRT:
+    Type: AWS::EC2::RouteTable
+    DependsOn: NavitairePublicVPC
+    Properties:
+      VpcId: !Ref NavitairePublicVPC
+      Tags:
+        - Key: Name
+          Value: "VolPrcNavPub-rt"
+        - Key: Env
+          Value: !Ref Environment
+  NPubS3Endpoint:
+    Type: AWS::EC2::VPCEndpoint
+    DependsOn: NavPubRT
+    Properties:
+      RouteTableIds: 
+        - !Ref NavPubRT
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.s3'
+      VpcEndpointType: Gateway
+      VpcId: !Ref NavitairePublicVPC
+  PrcNavPubPeerCon:
+    Type: AWS::EC2::VPCPeeringConnection
+    Properties:
+      PeerVpcId: !Ref ProjectVPC
+      VpcId: !Ref NavitairePublicVPC
+      Tags: 
+        - Key: "Name"
+          Value: "VolPricingNavPub-pcx"
+  NPrvPeerConRT:
+    Type: AWS::EC2::Route
+    DependsOn: PrcNavPubPeerCon
+    Properties:
+       RouteTableId:
+         Ref: NavPubRT
+       DestinationCidrBlock: "0.0.0.0/16"
+       VpcPeeringConnectionId:
+         Ref: PrcNavPubPeerCon
   ProjectVPC:
     Type: AWS::EC2::VPC
     Properties: 
@@ -284,4 +320,4 @@ Resources:
       EnableDnsSupport: True
       Tags: 
         - Key: "Name"
-          Value: "VoiPricing-vpc"
+          Value: "VolPricing-vpc"
