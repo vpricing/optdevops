@@ -28,6 +28,13 @@ Parameters:
     Type: String
     Default: '10.106.0.0/16'
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
+  EIPAllocationID:
+    Type: String
+    Default: ''
+Conditions:
+  CreateEIPNatGW: !Equals
+    - !Ref EIPAllocationID
+    - ''
 
 Resources: 
   NavitairePrivateVPC:
@@ -321,6 +328,17 @@ Resources:
       Tags: 
         - Key: "Name"
           Value: "VolPricing-vpc"
+  PricingInternetGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: "VolPricing-igw"
+  PricingIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref PricingInternetGW
+      VpcId: !Ref ProjectVPC
   PrcPubRT:
     Type: AWS::EC2::RouteTable
     DependsOn: ProjectVPC
@@ -331,6 +349,21 @@ Resources:
           Value: "VolPrcPub-rt"
         - Key: Env
           Value: !Ref Environment
+  PrcInternetRoute:
+    Type: AWS::EC2::Route
+    DependsOn: PricingIGWAttachment
+    Properties:
+       RouteTableId:
+         Ref: PrcPubRT
+       DestinationCidrBlock: "0.0.0.0/16"
+       GatewayId: !Ref PricingInternetGW
+  PrcElasticIP:
+    Type: AWS::EC2::EIP
+    Condition: CreateEIPNatGW
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: "VolPrcIPNatGW-eip"
   PrcPrvRT:
     Type: AWS::EC2::RouteTable
     DependsOn: ProjectVPC
@@ -354,6 +387,23 @@ Resources:
           Value: "PrcPublicSub1"
         - Key: Env
           Value: !Ref Environment
+  PrcNatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: 
+        !If 
+          - CreateEIPNatGW
+          - !GetAtt PrcElasticIP.AllocationId
+          - !Ref EIPAllocationID
+      SubnetId: !Ref PrcPublicSubNet1
+  PrcPublicSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcPublicSubNet1
+      RouteTableId:
+        Ref: PrcPubRT
+  
   PrcPublicSubNet2:
     Type: AWS::EC2::Subnet
     DependsOn: ProjectVPC
@@ -367,6 +417,13 @@ Resources:
           Value: "PrcPublicSub2"
         - Key: Env
           Value: !Ref Environment
+  PrcPublicSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcPublicSubNet2
+      RouteTableId:
+        Ref: PrcPubRT
   PrcPublicSubNet3:
     Type: AWS::EC2::Subnet
     DependsOn: ProjectVPC
@@ -380,6 +437,13 @@ Resources:
           Value: "PrcPublicSub3"
         - Key: Env
           Value: !Ref Environment
+  PrcPublicSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcPublicSubNet3
+      RouteTableId:
+        Ref: PrcPubRT
   PrcDataWarehouseSubNet1:
     Type: AWS::EC2::Subnet
     DependsOn: ProjectVPC
@@ -393,6 +457,13 @@ Resources:
           Value: "PrcDataWarehouseSub1"
         - Key: Env
           Value: !Ref Environment
+  PrcDataWarehouseSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDataWarehouseSubNet1
+      RouteTableId:
+        Ref: PrcPubRT
   PrcDataWarehouseSubNet2:
     Type: AWS::EC2::Subnet
     DependsOn: ProjectVPC
@@ -406,6 +477,13 @@ Resources:
           Value: "PrcDataWarehouseSub2"
         - Key: Env
           Value: !Ref Environment
+  PrcDataWarehouseSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDataWarehouseSubNet2
+      RouteTableId:
+        Ref: PrcPubRT
   PrcDataWarehouseSubNet3:
     Type: AWS::EC2::Subnet
     DependsOn: ProjectVPC
@@ -416,8 +494,202 @@ Resources:
       AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "PrcPublicSub3"
+          Value: "PrcDataWarehouseSub3"
         - Key: Env
           Value: !Ref Environment
-  
+  PrcDataWarehouseSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDataWarehouseSubNet3
+      RouteTableId:
+        Ref: PrcPubRT
+  PrcDatabaseSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 6, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDatabaseSub1"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDatabaseSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDatabaseSubNet1
+      RouteTableId:
+        Ref: PrcPubRT
+  PrcDatabaseSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 7, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDatabaseSub2"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDatabaseSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDatabaseSubNet2
+      RouteTableId:
+        Ref: PrcPubRT
+  PrcDatabaseSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 8, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDatabaseSub3"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDatabaseSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDatabaseSubNet3
+      RouteTableId:
+        Ref: PrcPubRT
+  PrcDataWorkerSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 9, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDataWorkerSub1"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDataWorkerSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDataWorkerSubNet1
+      RouteTableId:
+        Ref: PrcPrvRT
+  PrcDataWorkerSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 10, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDataWorkerSub2"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDataWorkerSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDataWorkerSubNet2
+      RouteTableId:
+        Ref: PrcPrvRT
+  PrcDataWorkerSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 11, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcDataWorkerSub3"
+        - Key: Env
+          Value: !Ref Environment
+  PrcDataWorkerSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcDataWorkerSubNet3
+      RouteTableId:
+        Ref: PrcPrvRT
+  PrcSageMakerSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 12, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcSageMakerSub1"
+        - Key: Env
+          Value: !Ref Environment
+  PrcSageMakerSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcSageMakerSubNet1
+      RouteTableId:
+        Ref: PrcPrvRT
+  PrcSageMakerSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 13, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcSageMakerSub2"
+        - Key: Env
+          Value: !Ref Environment
+  PrcSageMakerSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcSageMakerSubNet2
+      RouteTableId:
+        Ref: PrcPrvRT
+  PrcSageMakerSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: ProjectVPC
+    Properties:
+      VpcId:
+        Ref: ProjectVPC
+      CidrBlock: !Select [ 14, !Cidr [ !GetAtt ProjectVPC.CidrBlock, 15, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "PrcSageMakerSub3"
+        - Key: Env
+          Value: !Ref Environment
+  PrcSageMakerSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: PrcSageMakerSubNet3
+      RouteTableId:
+        Ref: PrcPrvRT
+  PrcPrvInternetRoute:
+    Type: AWS::EC2::Route
+    DependsOn: PrcNatGateway
+    Properties:
+       RouteTableId:
+         Ref: PrcPrvRT
+       DestinationCidrBlock: "0.0.0.0/16"
+       NatGatewayId: !Ref PrcNatGateway 
  
