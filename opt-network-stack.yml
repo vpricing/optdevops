@@ -1,5 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Dynamic Pricing - DevOps - Network
+  Deploy of VPCs, and Navitaire Connection
+  Main Resources Navitare Public & Private Connection and Dynamic Pricing Network
 Parameters: 
   Environment:
     Type: String
