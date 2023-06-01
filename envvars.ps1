@@ -12,15 +12,15 @@ $DevOpsProfile=''
 
 ## Network Parameters
 # CIDR
-$DevNavPrivateCIDR='/16'
-$DevNavPublicCIDR='/16'
-$DevOptProjectCIDR='/16'
-$UatNavPrivateCIDR='/16'
-$UatNavPublicCIDR='/16'
-$UatOptProjectCIDR='/16'
-$ProdNavPrivateCIDR='/16'
-$ProdNavPublicCIDR='/16'
-$ProdOptProjectCIDR='/16'
+$DevNavPrivateCIDR="10.111.0.0/16"
+$DevNavPublicCIDR='10.112.0.0/16'
+$DevOptProjectCIDR="10.106.0.0/16"
+$UatNavPrivateCIDR="10.113.0.0/16"
+$UatNavPublicCIDR="10.114.0.0/16"
+$UatOptProjectCIDR="10.115.0.0/16"
+$ProdNavPrivateCIDR="10.116.0.0/16"
+$ProdNavPublicCIDR="10.117.0.0/16"
+$ProdOptProjectCIDR="10.118.0.0/16"
 
 # Transit Gateway Accepter
 $TGWNetAccount=''
@@ -37,7 +37,7 @@ aws cloudformation create-stack --stack-name "opt-dev-security" --template-body 
 aws cloudformation update-stack --stack-name "opt-dev-security" --template-body file://opt-security-stack.yml --capabilities CAPABILITY_NAMED_IAM
 
 aws cloudformation validate-template --template-body file://opt-network-stack.yml
-aws cloudformation create-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM --parameter ParameterKey=TGRegion,ParameterValue=us-east-2 ParameterKey=TGatewayId,ParameterValue=tgw-08ef88e69dcd07c7a ParameterKey=TGAccountId,ParameterValue=072515348649
+aws cloudformation create-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM --parameter ParameterKey=TGRegion,ParameterValue=us-east-2 ParameterKey=TGatewayId,ParameterValue=tgw-08ef88e69dcd07c7a ParameterKey=TGAccountId,ParameterValue=072515348649 ParameterKey=NavPrivCIDR,ParameterValue="10.111.0.0/16" ParameterKey=NavPubCIDR,ParameterValue="10.112.0.0/16" ParameterKey=ProjectCIDR,ParameterValue='10.106.0.0/16'
 
-aws cloudformation update-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM --parameter ParameterKey=TGRegion,ParameterValue=us-east-2 ParameterKey=TGatewayId,ParameterValue=tgw-08ef88e69dcd07c7a ParameterKey=TGAccountId,ParameterValue=072515348649
+aws cloudformation update-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM --parameter ParameterKey=TGRegion,ParameterValue=us-east-2 ParameterKey=TGatewayId,ParameterValue=tgw-08ef88e69dcd07c7a ParameterKey=TGAccountId,ParameterValue=072515348649 ParameterKey=NavPrivCIDR,ParameterValue="10.111.0.0/16" ParameterKey=NavPubCIDR,ParameterValue="10.112.0.0/16" ParameterKey=ProjectCIDR,ParameterValue='10.106.0.0/16'
 aws cloudformation delete-stack --stack-name "opt-dev-network"
