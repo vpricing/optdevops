@@ -31,10 +31,20 @@ Parameters:
   EIPAllocationID:
     Type: String
     Default: ''
+  TransitGateway:
+    Type: String
+    Default: 'False'
 Conditions:
   CreateEIPNatGW: !Equals
     - !Ref EIPAllocationID
     - ''
+  CreateTGW: !Equals
+    - !Ref TransitGateway
+    - 'True'
+  CreateVPNGW: !Not 
+    - !Equals
+      - !Ref TransitGateway
+      - 'True'
 
 Resources: 
   NavitairePrivateVPC:
@@ -178,6 +188,7 @@ Resources:
         Ref: NavitairePrivateRT
   NavitairePrivateTGW:
     Type: "AWS::EC2::TransitGateway"
+    Condition: CreateTGW
     Properties:
       AmazonSideAsn: 65000
       Description: "TGW Dev Integration"
@@ -192,6 +203,7 @@ Resources:
           Value: !Sub 'VolITNetwork-${Environment}-tgw'
   NPTGWPeerAttach:
     Type: AWS::EC2::TransitGatewayPeeringAttachment
+    Condition: CreateTGW
     Properties: 
       PeerAccountId: !Ref TGAccountId
       PeerRegion: !Ref TGRegion
@@ -204,6 +216,7 @@ Resources:
           Value: !Sub 'VolITNav-${Environment}-tgwa'
   NPTGWVPCAttach:
     Type: AWS::EC2::TransitGatewayAttachment
+    Condition: CreateTGW
     Properties: 
       SubnetIds: 
         - !Ref NPODSConSubNet1
@@ -216,6 +229,20 @@ Resources:
           Value: !Sub 'VolPrcNavPriv-${Environment}-vpc'
       TransitGatewayId: !Ref NavitairePrivateTGW
       VpcId: !Ref NavitairePrivateVPC
+  NPVirtualPrivateGW:
+    Type: AWS::EC2::VPNGateway
+    Condition: CreateVPNGW
+    Properties:
+      Type: "ipsec.1"
+      Tags:
+      - Key: Name
+        Value: opt-Navitaire-vpgw
+  NPVirtualPrivateGAttach:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Condition: CreateVPNGW
+    Properties:
+      VpcId: !Ref NavitairePrivateVPC
+      VpnGatewayId: !Ref NPVirtualPrivateGW
   NPS3Endpoint:
     Type: AWS::EC2::VPCEndpoint
     DependsOn: NavitairePrivateRT
@@ -227,6 +254,7 @@ Resources:
       VpcId: !Ref NavitairePrivateVPC
   NPTGWRoute:
     Type: AWS::EC2::Route
+    Condition: CreateTGW
     DependsOn: NPTGWVPCAttach
     Properties:
        RouteTableId:
@@ -234,6 +262,16 @@ Resources:
        DestinationCidrBlock: !Ref NavitaireCIDR
        TransitGatewayId:
          Ref: NavitairePrivateTGW
+  NPVPNGWRoute:
+    Type: AWS::EC2::Route
+    Condition: CreateVPNGW
+    DependsOn: NPVirtualPrivateGAttach
+    Properties:
+       RouteTableId:
+         Ref: NavitairePrivateRT
+       DestinationCidrBlock: !Ref NavitaireCIDR
+       GatewayId:
+         Ref: NPVirtualPrivateGW
 
   NavitairePublicVPC:
     Type: AWS::EC2::VPC
@@ -319,6 +357,14 @@ Resources:
        DestinationCidrBlock: "0.0.0.0/16"
        VpcPeeringConnectionId:
          Ref: PrcNavPubPeerCon
+  PrcNPrvReturnRoute:
+    Type: AWS::EC2::Route
+    DependsOn: PrcNavPubPeerCon
+    Properties:
+       RouteTableId:
+         Ref: PrcPubRT
+       DestinationCidrBlock: !GetAtt NavitairePublicVPC.CidrBlock
+       VpcPeeringConnectionId: !Ref PrcNavPubPeerCon
   ProjectVPC:
     Type: AWS::EC2::VPC
     Properties: 
