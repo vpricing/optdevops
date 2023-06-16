@@ -185,7 +185,7 @@ Resources:
       RouteTableId:
         Ref: NavitairePrivateRT
   NavitairePrivateTGW:
-    Type: "AWS::EC2::TransitGateway"
+    Type: AWS::EC2::TransitGateway
     Condition: CreateTGW
     Properties:
       AmazonSideAsn: 65000
@@ -245,8 +245,10 @@ Resources:
        RouteTableId:
          Ref: NavitairePrivateRT
        DestinationCidrBlock: !Ref NavitaireCIDR
-       TransitGatewayId:
-         Ref: NavitairePrivateTGW
+       TransitGatewayId: !If
+        - CreateTGW
+        - !Ref NavitairePrivateTGW
+        - !Ref TGatewayId
 
   NavitairePublicVPC:
     Type: AWS::EC2::VPC
