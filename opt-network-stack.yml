@@ -20,11 +20,11 @@ Parameters:
     Default: '108160666657'
   NavPrivCIDR:
     Type: String
-    Default: '10.108.0.0/16'
+    Default: '10.111.0.0/16'
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
   NavPubCIDR:
     Type: String
-    Default: '10.107.0.0/16'
+    Default: '10.112.0.0/16'
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
   ProjectCIDR:
     Type: String
@@ -35,7 +35,7 @@ Parameters:
     Default: 'eipalloc-0060a03cc1750e32b'
   TransitGateway:
     Type: String
-    Default: 'True'
+    Default: 'False'
 Conditions:
   CreateEIPNatGW: !Equals
     - !Ref EIPAllocationID
@@ -214,7 +214,6 @@ Resources:
           Value: !Sub 'VolITNav-${Environment}-tgwa'
   NPTGWVPCAttach:
     Type: AWS::EC2::TransitGatewayAttachment
-    Condition: CreateTGW
     Properties: 
       SubnetIds: 
         - !Ref NPODSConSubNet1
@@ -225,7 +224,10 @@ Resources:
           Value: !Ref Environment
         - Key: Name
           Value: !Sub 'VolPrcNavPriv-${Environment}-vpc'
-      TransitGatewayId: !Ref NavitairePrivateTGW
+      TransitGatewayId: !If
+        - CreateTGW
+        - !Ref NavitairePrivateTGW
+        - !Ref TGatewayId
       VpcId: !Ref NavitairePrivateVPC
   NPS3Endpoint:
     Type: AWS::EC2::VPCEndpoint
@@ -238,7 +240,6 @@ Resources:
       VpcId: !Ref NavitairePrivateVPC
   NPTGWRoute:
     Type: AWS::EC2::Route
-    Condition: CreateTGW
     DependsOn: NPTGWVPCAttach
     Properties:
        RouteTableId:
