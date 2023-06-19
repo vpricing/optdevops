@@ -1,30 +1,30 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Dynamic Pricing - DevOps - Network
-  Deploy of VPCs, and Navitaire Connection
-  Main Resources Navitare Public & Private Connection and Dynamic Pricing Network
+Description: Volaris Optimization - DevOps - Network
+  Deploy of VPCs, Transit GW, Nat GW, Internet Gateway
+  Main Network Resources Navitare Public & Private Connection and Optimization Pricing VPC
 Parameters: 
   Environment:
     Type: String
     Default: 'dev'
   NavitaireCIDR:
     Type: String
-    Default: '149.122.50.0/24'
+    Default: '149.122.0.0/16'
   TGRegion:
     Type: String
     Default: us-east-1
   TGatewayId:
     Type: String
-    Default: tgw-0198c3591361cf885
+    Default: tgw-0589919ced47cddf3
   TGAccountId:
     Type: String
-    Default: '198251194805'
+    Default: '108160666657'
   NavPrivCIDR:
     Type: String
-    Default: '10.108.0.0/16'
+    Default: '10.111.0.0/16'
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
   NavPubCIDR:
     Type: String
-    Default: '10.107.0.0/16'
+    Default: '10.112.0.0/16'
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
   ProjectCIDR:
     Type: String
@@ -32,7 +32,7 @@ Parameters:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
   EIPAllocationID:
     Type: String
-    Default: ''
+    Default: 'eipalloc-0060a03cc1750e32b'
   TransitGateway:
     Type: String
     Default: 'False'
@@ -43,10 +43,6 @@ Conditions:
   CreateTGW: !Equals
     - !Ref TransitGateway
     - 'True'
-  CreateVPNGW: !Not 
-    - !Equals
-      - !Ref TransitGateway
-      - 'True'
 
 Resources: 
   NavitairePrivateVPC:
@@ -192,7 +188,7 @@ Resources:
     Type: AWS::EC2::TransitGateway
     Condition: CreateTGW
     Properties:
-      AmazonSideAsn: 64512
+      AmazonSideAsn: 65000
       Description: "TGW Dev Integration"
       AutoAcceptSharedAttachments: "disable"
       DefaultRouteTableAssociation: "enable"
@@ -218,7 +214,6 @@ Resources:
           Value: !Sub 'VolITNav-${Environment}-tgwa'
   NPTGWVPCAttach:
     Type: AWS::EC2::TransitGatewayAttachment
-    Condition: CreateTGW
     Properties: 
       SubnetIds: 
         - !Ref NPODSConSubNet1
@@ -229,22 +224,11 @@ Resources:
           Value: !Ref Environment
         - Key: Name
           Value: !Sub 'VolPrcNavPriv-${Environment}-vpc'
-      TransitGatewayId: !Ref NavitairePrivateTGW
+      TransitGatewayId: !If
+        - CreateTGW
+        - !Ref NavitairePrivateTGW
+        - !Ref TGatewayId
       VpcId: !Ref NavitairePrivateVPC
-  NPVirtualPrivateGW:
-    Type: AWS::EC2::VPNGateway
-    Condition: CreateVPNGW
-    Properties:
-      Type: "ipsec.1"
-      Tags:
-      - Key: Name
-        Value: opt-Navitaire-vpgw
-  NPVirtualPrivateGAttach:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Condition: CreateVPNGW
-    Properties:
-      VpcId: !Ref NavitairePrivateVPC
-      VpnGatewayId: !Ref NPVirtualPrivateGW
   NPS3Endpoint:
     Type: AWS::EC2::VPCEndpoint
     DependsOn: NavitairePrivateRT
@@ -256,24 +240,15 @@ Resources:
       VpcId: !Ref NavitairePrivateVPC
   NPTGWRoute:
     Type: AWS::EC2::Route
-    Condition: CreateTGW
     DependsOn: NPTGWVPCAttach
     Properties:
        RouteTableId:
          Ref: NavitairePrivateRT
        DestinationCidrBlock: !Ref NavitaireCIDR
-       TransitGatewayId:
-         Ref: NavitairePrivateTGW
-  NPVPNGWRoute:
-    Type: AWS::EC2::Route
-    Condition: CreateVPNGW
-    DependsOn: NPVirtualPrivateGAttach
-    Properties:
-       RouteTableId:
-         Ref: NavitairePrivateRT
-       DestinationCidrBlock: !Ref NavitaireCIDR
-       GatewayId:
-         Ref: NPVirtualPrivateGW
+       TransitGatewayId: !If
+        - CreateTGW
+        - !Ref NavitairePrivateTGW
+        - !Ref TGatewayId
 
   NavitairePublicVPC:
     Type: AWS::EC2::VPC
