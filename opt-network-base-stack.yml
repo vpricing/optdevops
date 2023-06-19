@@ -189,10 +189,10 @@ Resources:
       RouteTableId:
         Ref: NavitairePrivateRT
   NavitairePrivateTGW:
-    Type: "AWS::EC2::TransitGateway"
+    Type: AWS::EC2::TransitGateway
     Condition: CreateTGW
     Properties:
-      AmazonSideAsn: 65000
+      AmazonSideAsn: 64512
       Description: "TGW Dev Integration"
       AutoAcceptSharedAttachments: "disable"
       DefaultRouteTableAssociation: "enable"

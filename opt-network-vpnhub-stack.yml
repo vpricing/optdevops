@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Dynamic Pricing - DevOps - Network
+  Network hub between AWS Pricing to Volaris Network
+  Deploy of Transit Gateway, CustomerGateway and VPN Site-To-Site
+Parameters: 
+  Environment:
+    Type: String
+    Default: 'dev'
+  VolCustomGatewayIP:
+    Type: String
+    Default: '209.249.149.18'
+Resources: 
+  PricingNetworkHubTGW:
+    Type: AWS::EC2::TransitGateway
+    Properties:
+      AmazonSideAsn: 64512
+      Description: "Vol Pricing TGW Network Hub to Volaris Network"
+      AutoAcceptSharedAttachments: "disable"
+      DefaultRouteTableAssociation: "enable"
+      DnsSupport: "enable"
+      VpnEcmpSupport: "enable"
+      Tags:
+        - Key: Env
+          Value: !Ref Environment
+        - Key: Name
+          Value: !Sub 'VolPricingHub-${Environment}-tgw'
+  VolOneNeckCG:
+    Type: AWS::EC2::CustomerGateway
+    Properties:
+      BgpAsn: 65000
+      IpAddress: !Ref VolCustomGatewayIP
+      Type: ipsec.1
+      Tags:
+        - Key: Env
+          Value: !Ref Environment
+        - Key: Area
+          Value: Pricing
+        - Key: Project
+          Value: Network
+  PricingVPNCon:
+    Type: AWS::EC2::VPNConnection
+    Properties: 
+      CustomerGatewayId: !Ref VolOneNeckCG
+      StaticRoutesOnly: true
+      Tags: 
+        - Key: Env
+          Value: !Ref Environment
+        - Key: Area
+          Value: Pricing
+        - Key: Project
+          Value: Network
+        - Key: Name
+          Value: !Sub 'PricingVolarisVPN-${Environment}-vpnx'
+      TransitGatewayId: !Ref PricingNetworkHubTGW
+      Type: ipsec.1
+
+

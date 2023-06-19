@@ -41,3 +41,5 @@ aws cloudformation create-stack --stack-name "opt-dev-network" --template-body f
 
 aws cloudformation update-stack --stack-name "opt-dev-network" --template-body file://opt-network-stack.yml --capabilities CAPABILITY_NAMED_IAM --parameter ParameterKey=TGRegion,ParameterValue=us-east-2 ParameterKey=TGatewayId,ParameterValue=tgw-08ef88e69dcd07c7a ParameterKey=TGAccountId,ParameterValue=072515348649 ParameterKey=NavPrivCIDR,ParameterValue="10.111.0.0/16" ParameterKey=NavPubCIDR,ParameterValue="10.112.0.0/16" ParameterKey=ProjectCIDR,ParameterValue='10.106.0.0/16'
 aws cloudformation delete-stack --stack-name "opt-dev-network"
+
+aws cloudformation create-stack --stack-name "opt-dev-network-vpnhub" --template-body file://opt-network-vpnhub-stack.yml --capabilities CAPABILITY_NAMED_IAM
