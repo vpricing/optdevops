@@ -1,20 +1,20 @@
 - Key: Company
-  Value: !Ref Environment
+  Value: vol
 - Key: Department
-  Value: !Ref Environment
+  Value: 'com'
 - Key: Project
-  Value: !Ref Environment
+  Value: 'ntw'
 - Key: Environment
   Value: !Ref Environment
 - Key: DevOpsTeam
-  Value: !Ref Environment
+  Value: 'comoptdevops'
 - Key: Owner
-  Value: !Ref Environment
+  Value: 'luis.calderon'
 - Key: Domain
-  Value: !Ref Environment
+  Value: 'rm'
 - Key: SubDomain
-  Value: !Ref Environment
+  Value: 'prc'
 - Key: CostAllocation
-  Value: !Ref Environment
-- Key: Layer
-  Value: !Ref Environment
+  Value: 'com-rm-vpchub'
+- Key: Component
+  Value: 
