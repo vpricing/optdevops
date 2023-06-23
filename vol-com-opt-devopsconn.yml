@@ -481,81 +481,6 @@ Resources:
           Value: 'com-rm-vpchub'
         - Key: Component
           Value: navpub
-  NPubDotRezSubNet1:
-    Type: AWS::EC2::Subnet
-    DependsOn: NavitairePublicVPC
-    Properties:
-      VpcId:
-        Ref: NavitairePublicVPC
-      CidrBlock: !Select [ 0, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
-      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
-      Tags:
-        - Key: Name
-          Value: "NavDotRezSubN1"
-        - Key: Company
-          Value: vol
-        - Key: Department
-          Value: 'com'
-        - Key: Project
-          Value: 'ntw'
-        - Key: Environment
-          Value: !Ref Environment
-        - Key: DevOpsTeam
-          Value: 'comoptdevops'
-        - Key: Owner
-          Value: 'luis.calderon'
-        - Key: Domain
-          Value: 'rm'
-        - Key: SubDomain
-          Value: 'prc'
-        - Key: CostAllocation
-          Value: 'com-rm-vpchub'
-        - Key: Component
-          Value: navpub
-  NPubDotRezSubNet2:
-    Type: AWS::EC2::Subnet
-    DependsOn: NavitairePublicVPC
-    Properties:
-      VpcId:
-        Ref: NavitairePublicVPC
-      CidrBlock: !Select [ 1, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
-      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
-      Tags:
-        - Key: Name
-          Value: "NavDotRezSubN2"
-        - Key: Company
-          Value: vol
-        - Key: Department
-          Value: 'com'
-        - Key: Project
-          Value: 'ntw'
-        - Key: Environment
-          Value: !Ref Environment
-        - Key: DevOpsTeam
-          Value: 'comoptdevops'
-        - Key: Owner
-          Value: 'luis.calderon'
-        - Key: Domain
-          Value: 'rm'
-        - Key: SubDomain
-          Value: 'prc'
-        - Key: CostAllocation
-          Value: 'com-rm-vpchub'
-        - Key: Component
-          Value: navpub
-  NPubDotRezSubNet3:
-    Type: AWS::EC2::Subnet
-    DependsOn: NavitairePublicVPC
-    Properties:
-      VpcId:
-        Ref: NavitairePublicVPC
-      CidrBlock: !Select [ 2, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
-      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
-      Tags:
-        - Key: Name
-          Value: "NavDotRezSubN3"
-        - Key: Env
-          Value: !Ref Environment
   NavPubRT:
     Type: AWS::EC2::RouteTable
     DependsOn: NavitairePublicVPC
@@ -630,6 +555,121 @@ Resources:
        DestinationCidrBlock: "0.0.0.0/16"
        VpcPeeringConnectionId:
          Ref: PrcNavPubPeerCon
+  NPubDotRezSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePublicVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePublicVPC
+      CidrBlock: !Select [ 0, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavDotRezSubN1"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: navpub
+  NPubDotRezSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePublicVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePublicVPC
+      CidrBlock: !Select [ 1, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavDotRezSubN2"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: navpub
+  NPubDotRezSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePublicVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePublicVPC
+      CidrBlock: !Select [ 2, !Cidr [ !GetAtt NavitairePublicVPC.CidrBlock, 6, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavDotRezSubN3"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: navpub
+  NPubDotRezSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPubDotRezSubNet1
+      RouteTableId:
+        Ref: NavPubRT
+  NPubDotRezSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPubDotRezSubNet2
+      RouteTableId:
+        Ref: NavPubRT
+  NPubDotRezSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPubDotRezSubNet3
+      RouteTableId:
+        Ref: NavPubRT
+  
   PrcNPrvReturnRoute:
     Type: AWS::EC2::Route
     DependsOn: PrcNavPubPeerCon
@@ -673,6 +713,26 @@ Resources:
       Tags:
         - Key: "Name"
           Value: "VolPricing-igw"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: rmvpc
   PricingIGWAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
@@ -749,8 +809,26 @@ Resources:
       Tags:
         - Key: Name
           Value: "VolPrcPrv-rt"
-        - Key: Env
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
           Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: rmvpc
   PrcPublicSubNet1:
     Type: AWS::EC2::Subnet
     DependsOn: ProjectVPC
@@ -791,6 +869,29 @@ Resources:
           - !GetAtt PrcElasticIP.AllocationId
           - !Ref EIPAllocationID
       SubnetId: !Ref PrcPublicSubNet1
+      Tags:
+        - Key: Name
+          Value: "PrcPubNatGateway"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: rmvpc
   PrcPublicSubNet1RTAss:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
@@ -848,8 +949,26 @@ Resources:
       Tags:
         - Key: Name
           Value: "PrcPublicSub3"
-        - Key: Env
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
           Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: rmvpc
   PrcPublicSubNet3RTAss:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:

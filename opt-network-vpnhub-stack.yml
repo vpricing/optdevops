@@ -20,10 +20,28 @@ Resources:
       DnsSupport: "enable"
       VpnEcmpSupport: "enable"
       Tags:
-        - Key: Env
-          Value: !Ref Environment
         - Key: Name
-          Value: !Sub 'VolPricingHub-${Environment}-tgw'
+          Value: !Sub 'VolPricingNTWHub-${Environment}-tgw'
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: ntwhub
   VolOneNeckCG:
     Type: AWS::EC2::CustomerGateway
     Properties:
@@ -31,26 +49,54 @@ Resources:
       IpAddress: !Ref VolCustomGatewayIP
       Type: ipsec.1
       Tags:
-        - Key: Env
-          Value: !Ref Environment
-        - Key: Area
-          Value: Pricing
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
         - Key: Project
-          Value: Network
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: ntwhub
   PricingVPNCon:
     Type: AWS::EC2::VPNConnection
     Properties: 
       CustomerGatewayId: !Ref VolOneNeckCG
       StaticRoutesOnly: true
       Tags: 
-        - Key: Env
-          Value: !Ref Environment
-        - Key: Area
-          Value: Pricing
-        - Key: Project
-          Value: Network
         - Key: Name
           Value: !Sub 'PricingVolarisVPN-${Environment}-vpnx'
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: ntwhub
       TransitGatewayId: !Ref PricingNetworkHubTGW
       Type: ipsec.1
 
