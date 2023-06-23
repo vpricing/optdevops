@@ -32,7 +32,6 @@ Resources:
           - Effect: "Allow"
             Principal:
               AWS:
-                - "arn:aws:iam::108160666657:user/rm/opt/poweruser/luis.calderon_dev"
                 - "arn:aws:iam::108160666657:user/rm/opt/admin/luis.calderon"
             Action:
               - "sts:AssumeRole"
