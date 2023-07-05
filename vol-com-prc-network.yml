@@ -301,7 +301,7 @@ Resources:
       AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "NavODSSparkSub1"
+          Value: "NavODSLambdaConSub1"
         - Key: Company
           Value: vol
         - Key: Department
@@ -332,7 +332,7 @@ Resources:
       AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "NavODSSparkSub2"
+          Value: "NavODSLambdaConSub2"
         - Key: Company
           Value: vol
         - Key: Department
@@ -363,7 +363,7 @@ Resources:
       AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "NavODSSparkSub3"
+          Value: "NavODSLambdaConSub3"
         - Key: Company
           Value: vol
         - Key: Department
