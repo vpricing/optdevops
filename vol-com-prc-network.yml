@@ -110,11 +110,11 @@ Resources:
     Properties:
       VpcId:
         Ref: NavitairePrivateVPC
-      CidrBlock: !Select [ 0, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      CidrBlock: !Select [ 0, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
       AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "NavDotRezSubN1"
+          Value: "NavODSSparkSub1"
         - Key: Company
           Value: vol
         - Key: Department
@@ -141,11 +141,11 @@ Resources:
     Properties:
       VpcId:
         Ref: NavitairePrivateVPC
-      CidrBlock: !Select [ 1, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      CidrBlock: !Select [ 1, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
       AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "NavDotRezSubN2"
+          Value: "NavODSSparkSub2"
         - Key: Company
           Value: vol
         - Key: Department
@@ -172,11 +172,11 @@ Resources:
     Properties:
       VpcId:
         Ref: NavitairePrivateVPC
-      CidrBlock: !Select [ 2, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      CidrBlock: !Select [ 2, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
       AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
-          Value: "NavDotRezSubN3"
+          Value: "NavODSSparkSub3"
         - Key: Company
           Value: vol
         - Key: Department
@@ -197,13 +197,14 @@ Resources:
           Value: 'com-rm-vpchub'
         - Key: Component
           Value: navpri
+  
   NPNewSkiesSubNet1:
     Type: AWS::EC2::Subnet
     DependsOn: NavitairePrivateVPC
     Properties:
       VpcId:
         Ref: NavitairePrivateVPC
-      CidrBlock: !Select [ 3, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      CidrBlock: !Select [ 3, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
       AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
@@ -234,7 +235,7 @@ Resources:
     Properties:
       VpcId:
         Ref: NavitairePrivateVPC
-      CidrBlock: !Select [ 4, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      CidrBlock: !Select [ 4, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
       AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
@@ -265,11 +266,104 @@ Resources:
     Properties:
       VpcId:
         Ref: NavitairePrivateVPC
-      CidrBlock: !Select [ 5, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 6, 8]]
+      CidrBlock: !Select [ 5, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
       AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
       Tags:
         - Key: Name
           Value: "NewSkiesSubN3"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: navpri
+  NPODSLambdaConSubNet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 6, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
+      AvailabilityZone: !Select [0, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavODSSparkSub1"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: navpri
+  NPODSLambdaConSubNet2:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 7, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
+      AvailabilityZone: !Select [1, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavODSSparkSub2"
+        - Key: Company
+          Value: vol
+        - Key: Department
+          Value: 'com'
+        - Key: Project
+          Value: 'ntw'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: DevOpsTeam
+          Value: 'comoptdevops'
+        - Key: Owner
+          Value: 'luis.calderon'
+        - Key: Domain
+          Value: 'rm'
+        - Key: SubDomain
+          Value: 'prc'
+        - Key: CostAllocation
+          Value: 'com-rm-vpchub'
+        - Key: Component
+          Value: navpri
+  NPODSLambdaConSubNet3:
+    Type: AWS::EC2::Subnet
+    DependsOn: NavitairePrivateVPC
+    Properties:
+      VpcId:
+        Ref: NavitairePrivateVPC
+      CidrBlock: !Select [ 8, !Cidr [ !GetAtt NavitairePrivateVPC.CidrBlock, 9, 8]]
+      AvailabilityZone: !Select [2, Fn::GetAZs: !Ref 'AWS::Region']
+      Tags:
+        - Key: Name
+          Value: "NavODSSparkSub3"
         - Key: Company
           Value: vol
         - Key: Department
@@ -330,6 +424,27 @@ Resources:
     Properties:
       SubnetId:
         Ref: NPNewSkiesSubNet3
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPODSLambdaConSubNet1RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPODSLambdaConSubNet1
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPODSLambdaConSubNet2RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPODSLambdaConSubNet2
+      RouteTableId:
+        Ref: NavitairePrivateRT
+  NPODSLambdaConSubNet3RTAss:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: NPODSLambdaConSubNet3
       RouteTableId:
         Ref: NavitairePrivateRT
   NavitairePrivateTGW:
